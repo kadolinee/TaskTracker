@@ -5,7 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,8 +20,11 @@ public class Project implements Serializable{
     @Column(name = "name")
     private String name;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "project")
+    private List<Task> tasks;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "projects")
-    private Set<User> users;
+    private List<User> users;
 
 }

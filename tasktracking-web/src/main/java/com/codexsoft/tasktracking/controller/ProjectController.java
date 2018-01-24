@@ -24,7 +24,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<Map<String, List<Project>>> findAll() {
-        Map<String, List<Project>> projects = new HashMap<>(1);
+        Map<String, List<Project>> projects = new HashMap<>();
         projects.put("projects", projectService.findAll());
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }

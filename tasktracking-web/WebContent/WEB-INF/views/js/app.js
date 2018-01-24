@@ -2,13 +2,19 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {projectArray: []};
+        this.addProject = this.addProject.bind(this);
+    }
+
+    addProject(project) {
+        let newProjectArray = this.state.projectArray.concat(project);
+        this.setState({projectArray: newProjectArray});
     }
 
     loadFromServer() {
         axios
             .get('http://localhost:8080/project')
-            .then(res => this.setState({ projectArray: res.data.projects}))
-            .catch(err => console.log(err))
+            .then(res => this.setState({ projectArray: res.data.projects})
+            .catch(err => console.log(err)))
     }
 
     componentDidMount() {
@@ -18,7 +24,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <CreateProject />
+                <CreateProject addProject={this.addProject} projectArray={this.state.projectArray} />
                 <ProjectList projectArray={this.state.projectArray} />
             </div>
         )
@@ -27,18 +33,34 @@ class App extends React.Component {
 }
 
 class ProjectList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const arrayItems = this.props.projectArray.map((project) =>
             <li key={project.id}>
                 {project.name}
+                <TaskList project={project.tasks} />
+            </li>
+
+        );
+        return (
+
+            <ul className="project">
+                {arrayItems}
+            </ul>
+        )
+    }
+}
+
+
+
+class TaskList extends React.Component {
+    render() {
+        const arrayItems = this.props.project.map((task) =>
+            <li key={task.id}>
+                {task.name}
             </li>
         );
         return (
-            <ul className="project">
+            <ul className="task">
                 {arrayItems}
             </ul>
         )
@@ -48,32 +70,36 @@ class ProjectList extends React.Component {
 class CreateProject extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {project: ''};
-        this.postOnServer = this.postOnServer.bind(this);
-    }
-
-    postOnServer(newProject) {
-        axios
-            .post('http://localhost:8080/project', {
-                name: newProject})
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
+        this.state = {projectName: ''};
     }
 
     onFieldChange(e) {
-        let text = e.target.value;
-        this.setState({text: text});
+        let projectName = e.target.value;
+        this.setState({projectName: projectName});
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        let text = this.state.text;
-        this.setState({text: ''});
-        this.postOnServer(text);
+        let projectName = this.state.projectName;
+        this.postOnServer(projectName);
+        this.setState({projectName: ''});
+
+        let id = this.props.projectArray[this.props.projectArray.length];
+        let project = {name: projectName, id: id};
+        this.props.addProject(project);
     }
 
-    componentDidMount(newProject) {
-        this.postOnServer(newProject);
+    postOnServer(projectName) {
+        axios
+            .post('http://localhost:8080/project', {
+                name: projectName
+            })
+            .then(res => console.log(res))
+            .catch(err => console.log(err))
+    }
+
+    componentDidMount(project) {
+        this.postOnServer(project);
     }
 
     render() {
@@ -81,7 +107,7 @@ class CreateProject extends React.Component {
             <form onSubmit={this.handleSubmit.bind(this)}>
                 <input
                     type='text'
-                    onChange={this.onFieldChange.bind(this)} value={this.state.text}
+                    onChange={this.onFieldChange.bind(this)} value={this.state.projectName}
                     placeholder='Name of the new project'
                 />
                 <button>Create</button>
