@@ -63,14 +63,17 @@ class ProjectList extends React.Component {
 
 class TaskList extends React.Component {
     render() {
-        const arrayItems = this.props.project.map((task) =>
-            <div className={this.props.style}>
+        let style = this.props.style;
+        let arrayItems = [];
+        if (style === '') {
+         arrayItems = this.props.project.map((task) =>
+            <div className={style}>
             <li key={task.id}>
                 {task.name}
             </li>
             </div>
 
-        );
+        )}
         return (
                 <ul>
                     {arrayItems}
