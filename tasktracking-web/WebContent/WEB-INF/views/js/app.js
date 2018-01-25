@@ -33,36 +33,48 @@ class App extends React.Component {
 }
 
 class ProjectList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {focused: 0 };
+        this.tasksClick = this.tasksClick.bind(this);
+    }
+
+    tasksClick(index) {
+        this.setState({focused: index});
+    }
+
     render() {
-        const arrayItems = this.props.projectArray.map((project) =>
-            <li key={project.id}>
-                {project.name}
-                <TaskList project={project.tasks} />
-            </li>
-
-        );
         return (
-
             <ul className="project">
-                {arrayItems}
+                {this.props.projectArray.map((project) => {
+                    let style = 'none';
+                    if (this.state.focused === project.id) {
+                        style = '';
+                    }
+
+                    return <li key={project.id}>
+                        <a href="#" onClick={this.tasksClick.bind(this, project.id)}>{project.name}</a>
+                        <TaskList project={project.tasks} style={style}/>
+                    </li>;})}
             </ul>
         )
     }
 }
 
-
-
 class TaskList extends React.Component {
     render() {
         const arrayItems = this.props.project.map((task) =>
+            <div className={this.props.style}>
             <li key={task.id}>
                 {task.name}
             </li>
+            </div>
+
         );
         return (
-            <ul className="task">
-                {arrayItems}
-            </ul>
+                <ul>
+                    {arrayItems}
+                </ul>
         )
     }
 }
