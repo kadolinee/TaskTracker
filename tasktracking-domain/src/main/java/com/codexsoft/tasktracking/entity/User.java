@@ -1,15 +1,20 @@
 package com.codexsoft.tasktracking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "user")
-public class User implements Serializable {
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +30,13 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="role_id", nullable = false)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToMany
     @JoinTable(name = "user_project", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private Set<Project> projects;
+    private List<Project> projects;
 
 }

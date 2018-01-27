@@ -8,6 +8,7 @@ class App extends React.Component {
     addProject(project) {
         let newProjectArray = this.state.projectArray.concat(project);
         this.setState({projectArray: newProjectArray});
+
     }
 
     loadFromServer() {
@@ -25,6 +26,7 @@ class App extends React.Component {
         return (
             <div>
                 <CreateProject addProject={this.addProject} projectArray={this.state.projectArray} />
+                <CreateTask projectArray={this.state.projectArray}/>
                 <ProjectList projectArray={this.state.projectArray} />
             </div>
         )
@@ -62,6 +64,11 @@ class ProjectList extends React.Component {
 }
 
 class TaskList extends React.Component {
+    handleClick(taskId) {
+        // Check if the sessionStorage object exists
+        localStorage.setItem("taskId", taskId);
+    }
+
     render() {
         let style = this.props.style;
         let arrayItems = [];
@@ -69,7 +76,7 @@ class TaskList extends React.Component {
          arrayItems = this.props.project.map((task) =>
             <div className={style}>
             <li key={task.id}>
-                {task.name}
+                <a href='/taskPage' onClick={this.handleClick(task.id)}> {task.name} </a>
             </li>
             </div>
 
@@ -85,10 +92,12 @@ class TaskList extends React.Component {
 class CreateProject extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {projectName: ''};
+        this.state = {projectName: null};
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    onFieldChange(e) {
+    handleChange(e) {
         let projectName = e.target.value;
         this.setState({projectName: projectName});
     }
@@ -119,15 +128,91 @@ class CreateProject extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit.bind(this)}>
+            <form onSubmit={this.handleSubmit}>
                 <input
                     type='text'
-                    onChange={this.onFieldChange.bind(this)} value={this.state.projectName}
+                    onChange={this.handleChange} value={this.state.projectName}
                     placeholder='Name of the new project'
                 />
-                <button>Create</button>
+                <input type="submit" value="Create project"/>
             </form>
         )
+    }
+}
+
+class CreateTask extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {name: null, title: null, project: {id: null, name: null}};
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleTitleChange = this.handleTitleChange.bind(this);
+        this.handleProjectChange = this.handleProjectChange.bind(this);
+        this.handleNameChange = this.handleNameChange.bind(this);
+    }
+
+    handleNameChange(e) {
+        this.setState({name: e.target.value});
+    }
+
+    handleTitleChange(e) {
+        this.setState({title: e.target.value});
+    }
+
+    handleProjectChange(e) {
+        this.setState({project: {id: e.target.value}});
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        let name = this.state.name;
+        let title = this.state.title;
+        let project = this.state.project;
+        this.postOnServer(name, title, project);
+        this.setState({name: '', title: '', project: {id: 1}});
+    }
+
+    postOnServer(name, title, project) {
+        let taskStatus = {id: 1, name: ''};
+        axios
+            .post('http://localhost:8080/task', {
+                name: name,
+                taskStatus: taskStatus,
+                title: title,
+                project: project
+            })
+            .then(res => console.log(res))
+            .catch(err => console.log(err.response.data, err.response.status, err.response.headers))
+    }
+
+    componentDidMount(name, title, project) {
+        this.postOnServer(name, title, project);
+    }
+
+    render() {
+        const projectArray = this.props.projectArray.map(project =>
+           <option key={project.id} value={project.id}>
+               {project.name}
+           </option>
+        );
+        return (
+            <form onSubmit={this.handleSubmit}><br/>
+                <label>
+                    Task name:
+                    <input type="text" value={this.state.name} onChange={this.handleNameChange}/><br/><br/>
+                </label>
+                <label>
+                    Description:
+                    <textarea value={this.state.title} onChange={this.handleTitleChange}/><br/><br/>
+                </label>
+                <label>
+                    Pick project:
+                    <select value={this.state.project.id} onChange={this.handleProjectChange}>
+                        {projectArray}
+                    </select>
+                </label>
+                <input type="submit" value="Create task" />
+            </form>
+        );
     }
 }
 

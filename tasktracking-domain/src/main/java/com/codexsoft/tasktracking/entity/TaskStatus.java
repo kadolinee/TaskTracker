@@ -3,12 +3,11 @@ package com.codexsoft.tasktracking.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "task_status")
-public class TaskStatus implements Serializable {
+public class TaskStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

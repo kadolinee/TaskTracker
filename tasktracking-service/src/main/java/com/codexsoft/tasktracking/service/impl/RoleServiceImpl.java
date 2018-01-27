@@ -16,9 +16,4 @@ public class RoleServiceImpl extends CrudServiceImpl<Role, Long> implements Role
     public RoleServiceImpl(RoleDao roleDao) {
         super(roleDao);
     }
-
-    @Transactional
-    public List<Role> get() {
-        return getDao().findAll();
-    }
 }

@@ -1,15 +1,20 @@
 package com.codexsoft.tasktracking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Date;
 
 @Data
 @Entity
 @Table(name = "comment")
-public class Comment implements Serializable {
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +27,12 @@ public class Comment implements Serializable {
     @Column(name = "text")
     private String text;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name="task_id", nullable = false)
     private Task task;
 
