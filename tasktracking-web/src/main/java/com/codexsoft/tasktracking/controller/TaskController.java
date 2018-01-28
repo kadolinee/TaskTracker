@@ -40,4 +40,9 @@ public class TaskController {
         return new ResponseEntity<>(taskService.find(taskId), HttpStatus.OK);
     }
 
+    @PutMapping("/{taskId}/{statusId}")
+    public ResponseEntity<Task> changeStatus(@PathVariable long taskId, @PathVariable long statusId) {
+        return new ResponseEntity<>(taskService.updateStatus(taskId, statusId), HttpStatus.OK);
+    }
+
 }

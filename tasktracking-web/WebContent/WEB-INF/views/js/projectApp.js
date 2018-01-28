@@ -3,12 +3,22 @@ class App extends React.Component {
         super(props);
         this.state = {projectArray: []};
         this.addProject = this.addProject.bind(this);
+        this.addTask = this.addTask.bind(this);
     }
 
     addProject(project) {
         let newProjectArray = this.state.projectArray.concat(project);
         this.setState({projectArray: newProjectArray});
+    }
 
+    addTask(projectId, task) {
+        // let taskId = null;
+        // this.state.projectArray.map(project => {
+        //     if (project.id === projectId) {
+        //         taskId = project.tasks[projectId.tasks.length];
+        //         project.tasks.concat(task);
+        //     }
+        // });
     }
 
     loadFromServer() {
@@ -26,7 +36,7 @@ class App extends React.Component {
         return (
             <div>
                 <CreateProject addProject={this.addProject} projectArray={this.state.projectArray} />
-                <CreateTask projectArray={this.state.projectArray}/>
+                <CreateTask addTask={this.addTask} projectArray={this.state.projectArray}/>
                 <ProjectList projectArray={this.state.projectArray} />
             </div>
         )
@@ -76,7 +86,7 @@ class TaskList extends React.Component {
          arrayItems = this.props.project.map((task) =>
             <div className={style}>
             <li key={task.id}>
-                <a href='/taskPage' onClick={this.handleClick(task.id)}> {task.name} </a>
+                <a href='/taskPage' onClick={this.handleClick(task.id)}><h3> {task.name} </h3></a>
             </li>
             </div>
 
@@ -167,12 +177,12 @@ class CreateTask extends React.Component {
         let name = this.state.name;
         let title = this.state.title;
         let project = this.state.project;
-        this.postOnServer(name, title, project);
+        let taskStatus = {id: 1, name: ''};
+        this.postOnServer(name, title, project, taskStatus);
         this.setState({name: '', title: '', project: {id: 1}});
     }
 
-    postOnServer(name, title, project) {
-        let taskStatus = {id: 1, name: ''};
+    postOnServer(name, title, project, taskStatus) {
         axios
             .post('http://localhost:8080/task', {
                 name: name,
@@ -181,11 +191,11 @@ class CreateTask extends React.Component {
                 project: project
             })
             .then(res => console.log(res))
-            .catch(err => console.log(err.response.data, err.response.status, err.response.headers))
+            .catch(err => console.log(err))
     }
 
-    componentDidMount(name, title, project) {
-        this.postOnServer(name, title, project);
+    componentDidMount(name, title, project, taskStatus) {
+        this.postOnServer(name, title, project, taskStatus);
     }
 
     render() {

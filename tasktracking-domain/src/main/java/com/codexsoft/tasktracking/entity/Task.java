@@ -27,6 +27,7 @@ public class Task {
     @Column(name = "title")
     private String title;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="project_id", nullable = false)
     private Project project;
