@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class MainController {
 
+    @GetMapping
+    public String loginPage() {
+        return "redirect:/user/registration";
+    }
+
     @GetMapping("projectList")
     public String projectList() {
         return "redirect:/projects.html";

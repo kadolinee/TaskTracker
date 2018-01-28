@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+<h1 th:text="#{label.form.title}">form</h1>
+<form action="/" th:object="${user}" method="POST" enctype="utf8">
+    <div>
+        <label th:text="#{label.user.name}">name</label>
+        <input th:field="*{name}"/>
+        <p th:each="error: ${#fields.errors('name')}"
+           th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.mail}">mail</label>
+        <input type="mail" th:field="*{mail}"/>
+        <p th:each="error : ${#fields.errors('mail')}"
+           th:text="${error}">Validation error</p>
+    </div>
+    <div>
+        <label th:text="#{label.user.password}">password</label>
+        <input type="password" th:field="*{password}"/>
+        <p th:each="error : ${#fields.errors('password')}"
+           th:text="${error}">Validation error</p>
+    </div>
+    <!--<div>-->
+        <!--<label th:text="#{label.user.role}">role</label>-->
+        <!--<select value></select>-->
+    <!--</div>-->
+    <button type="submit" th:text="#{label.form.submit}">submit</button>
+</form>
+
+<a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>
+</body>
+</body>
+</html>
