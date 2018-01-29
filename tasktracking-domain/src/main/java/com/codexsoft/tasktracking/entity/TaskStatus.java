@@ -10,7 +10,6 @@ import javax.persistence.*;
 public class TaskStatus {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
