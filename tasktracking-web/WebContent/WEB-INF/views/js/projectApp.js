@@ -86,7 +86,7 @@ class TaskList extends React.Component {
          arrayItems = this.props.project.map((task) =>
             <div className={style}>
             <li key={task.id}>
-                <a href='/taskPage' onClick={this.handleClick(task.id)}><h3> {task.name} </h3></a>
+                <a href='/task.html' onClick={this.handleClick(task.id)}><h3> {task.name} </h3></a>
             </li>
             </div>
 

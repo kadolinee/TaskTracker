@@ -13,4 +13,5 @@ public class UserServiceImpl extends CrudServiceImpl<User, Long> implements User
     public UserServiceImpl(UserDao userDao) {
         super(userDao);
     }
+
 }

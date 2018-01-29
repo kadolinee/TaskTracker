@@ -30,6 +30,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Transient
+    private String roleId;
+
     @ManyToOne
     @JoinColumn(name="role_id", nullable = false)
     private Role role;
